@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.24)
-project(proj-tests LANGUAGES CXX)
+project(vvsec-tests LANGUAGES CXX)
 
 include(GoogleTest)
 include(FetchContent)
@@ -14,15 +14,15 @@ FetchContent_MakeAvailable(googletest)
 file(GLOB_RECURSE SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp
 )
-add_executable(proj-tests ${SRC})
+add_executable(vvsec-tests ${SRC})
 
-target_include_directories(proj-tests PRIVATE
+target_include_directories(vvsec-tests PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/include/
 )
-target_link_libraries(proj-tests PRIVATE
-    proj
+target_link_libraries(vvsec-tests PRIVATE
+    vvsec
     GTest::gtest_main
 )
 
 enable_testing()
-gtest_discover_tests(proj-tests)
+gtest_discover_tests(vvsec-tests)

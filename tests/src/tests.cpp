@@ -7,7 +7,7 @@
 
 static const char* src_path = "../../assets/tests.udl";
 
-enum Tid {
+enum Tid : std::size_t {
   indent,
   space,
   type_kw,
@@ -82,31 +82,16 @@ TEST(Parser, ctor) {
   auto src = t2t::Source(src_path);
   auto scanner = t2t::Scanner(table);
 
-  // template <
-  //     class TidT,
-  //     class SymT,
-  //     SymProviderKind SymProviderT,
-  //     TidMatcherKind<SymT, TidT> TidMatcherT,
-  //     class UnexpectedSymHandlerT
-  // >
-
   using Sym = t2t::MaybeAnchoredToken;
 
   auto next_sym = [&scanner, &src]() {
     return scanner.scan(src);
   };
 
-  auto match_tid = [](const Sym& sym, Tid tid) {
-    return sym.tid == tid;
-  };
-
   auto unexp_sym_handler = []<t2t::TidKind... TidTs>(const Sym& sym, TidTs... tids) {
     std::cout << std::format("Unexpected symbol {}\n", sym.val);
   };
 
-  auto parser = vvsec::Parser<Tid,
-      Sym,
-      decltype(next_sym),
-      decltype(match_tid),
-      decltype(unexp_sym_handler)>(next_sym, match_tid, unexp_sym_handler);
+  auto parser = vvsec::Parser<Tid, Sym, decltype(next_sym), decltype(unexp_sym_handler)>(
+      next_sym, unexp_sym_handler);
 }

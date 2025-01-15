@@ -7,11 +7,11 @@
 namespace vvsec {
 
 template <class T>
-concept TidKind = requires { T::unknown; };
+concept TidKind = std::is_enum_v<T> and requires { T::unknown; };
 
-template <class T, class SymT, class TidT>
-concept TidMatcherKind = TidKind<TidT> and requires(SymT sym, TidT tid, T x) {
-  { x(sym, tid) } -> std::same_as<bool>;
+template <class T, class TidT>
+concept SymKind = TidKind<TidT> and requires(T x, TidT tid) {
+  { x == tid } -> std::same_as<bool>;
 };
 
 template <class T, class SymT>
@@ -35,16 +35,17 @@ struct MaybeTid final {
 };
 
 namespace detail {
+
 template <class HeadT, class... TailTs>
 concept same = (std::is_same_v<HeadT, TailTs> and ...);
+
 }
 
 // clang-format off
 template <
     class TidT,
-    class SymT,
+    SymKind<TidT> SymT,
     SymProviderKind<SymT> SymProviderT,
-    TidMatcherKind<SymT, TidT> TidMatcherT,
     class UnexpectedSymHandlerT
 >
 // clang-format on
@@ -54,7 +55,6 @@ class Parser {
   SymT _follow_sym;
 
   SymProviderT _sym_provider;
-  TidMatcherT _tid_matcher;
   UnexpectedSymHandlerT _unexpected_sym_handler;
 
   void _next() {
@@ -63,15 +63,10 @@ class Parser {
   }
 
  public:
-  // clang-format off
-  Parser(
-      SymProviderT provider, TidMatcherT matcher,
-      UnexpectedSymHandlerT unexpected_sym_handler
-  )  // clang-format on
+  Parser(SymProviderT provider, UnexpectedSymHandlerT unexpected_sym_handler)
       : _first_sym()
       , _follow_sym()
       , _sym_provider(provider)
-      , _tid_matcher(matcher)
       , _unexpected_sym_handler(unexpected_sym_handler) {}
 
   SymT first_sym() const {
@@ -87,10 +82,7 @@ class Parser {
     requires detail::same<TidT, TidTs...>
   MaybeTid<TidT> accept(TidTs... tids) {
     auto mtid = MaybeTid<TidT>{TidT::unknown, true};
-
-    ((_tid_matcher(_follow_sym, tids) ? (mtid.tid = tids, mtid.nothing = false) : true)
-        and ...);
-
+    ((_follow_sym == tids ? (mtid.tid = tids, mtid.nothing = false) : true) and ...);
     return mtid;
   }
 

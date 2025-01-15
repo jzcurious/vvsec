@@ -1,0 +1,56 @@
+// add test cases
+
+/* block comment */
+var Num | Str x = 1; // line comment
+var Num | Str y = x;
+var Str z = "Hello World!";
+
+var T t;
+
+type T = Num | Str | V;
+type U = T;
+type V = List<Num | Str>;
+
+x = 2;
+y = 3;
+z = "Bober curva ya perdole!";
+
+var X<Num | Str<T<S<R | I>> | U<V>>> x = 1;
+
+var List<Num | Str | List<Num | Str | U | T<V>>> list = [];
+var List<Num | Str | List<Num | Str | U | T<V>>> list = [1, 2, 3,];
+var List<Num | Str | List<Num | Str | U | T<V>>> list = [1, 2, [1, 2]];
+var List<Num | Str | List<Num | Str | U | T<V>>> list = [1, 2, [1, 2],];
+var List<Num | Str | List<Num | Str | U | T<V>>> list = [1, 2, 3];
+var List<Num | Str | List<Num | Str | U | T<V>>> list = [1, 2, [1, 2, 3], 3,];
+
+var Dict<Num | Str, Num | Str> d = {};
+var Dict<Num | Str, Num | Str> d = {1 : "1", "2" : 2};
+var Dict<Num | Str, Num | Dict<Num | Str, Str | Num>> d = {1 : "1", 2 : {3 : 4,}};
+var Dict<Num | Str, Num | Dict<Num | Str, Str | X<U, V>>> d = {2 : {3 : 4}, 1 : "1",};
+
+const List<Num | Str | List<Num | Str | U | T<V>>> list = [];
+const List<Num | Str | List<Num | Str | U | T<V>>> list = [1, 2, 3,];
+const List<Num | Str | List<Num | Str | U | T<V>>> list = [1, 2, [1, 2]];
+const List<Num | Str | List<Num | Str | U | T<V>>> list = [1, 2, [1, 2],];
+const List<Num | Str | List<Num | Str | U | T<V>>> list = [1, 2, 3];
+const List<Num | Str | List<Num | Str | U | T<V>>> list = [1, 2, [1, 2, 3], 3,];
+
+const Dict<Num | Str, Num | Str> d = {};
+const Dict<Num | Str, Num | Str> d = {1 : "1", "2" : 2};
+const Dict<Num | Str, Num | Dict<Num | Str, Str | Num>> d = {1 : "1", 2 : {3 : 4,}};
+const Dict<Num | Str, Num | Dict<Num | Str, Str | X<U, V>>> d = {2 : {3 : 4}, 1 : "1",};
+
+struct Point {
+    var Num x = 0;
+    var Num y = 0;
+};
+
+type T = U<T, V>;
+
+``` type T = U<T, V>;
+
+func Num linear(Num x, Num b) {
+    const Num a = 2;
+    ret a*x + b;
+};

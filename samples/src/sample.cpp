@@ -1,5 +1,5 @@
 #include <txt2tok/scanner.hpp>
-#include <txt2tok/source.hpp>
+#include <txt2tok/srcreader.hpp>
 #include <txt2tok/stbuilder.hpp>
 #include <vvsec/parser.hpp>
 
@@ -78,11 +78,11 @@ static auto table = t2t::ScanTableBuilder<Tid>{}
 
 using Sym = t2t::MaybeAnchoredToken;
 
-static auto src = t2t::Source(src_path);
+static auto reader = t2t::SourceReader(src_path);
 static auto scanner = t2t::Scanner(table);
 
 auto next_sym = []() {
-  return scanner.scan(src);
+  return scanner.scan(reader);
 };
 
 auto unexp_sym_handler = []<t2t::TidKind... TidTs>(const Sym& sym, TidTs... tids) {

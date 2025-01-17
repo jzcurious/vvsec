@@ -79,13 +79,13 @@ static auto table = t2t::ScanTableBuilder<Tid>{}
 // clang-format on
 
 TEST(Parser, ctor) {
-  auto src = t2t::Source(src_path);
+  auto reader = t2t::SourceReader(src_path);
   auto scanner = t2t::Scanner(table);
 
   using Sym = t2t::MaybeAnchoredToken;
 
-  auto next_sym = [&scanner, &src]() {
-    return scanner.scan(src);
+  auto next_sym = [&scanner, &reader]() {
+    return scanner.scan(reader);
   };
 
   auto unexp_sym_handler = []<t2t::TidKind... TidTs>(const Sym& sym, TidTs... tids) {

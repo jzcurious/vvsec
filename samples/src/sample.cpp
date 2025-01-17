@@ -1,8 +1,6 @@
-#include <format>
-#include <gtest/gtest.h>
 #include <txt2tok/scanner.hpp>
+#include <txt2tok/source.hpp>
 #include <txt2tok/stbuilder.hpp>
-#include <txt2tok/token.hpp>
 #include <vvsec/parser.hpp>
 
 static const char* src_path = "../../assets/tests.udl";
@@ -78,20 +76,20 @@ static auto table = t2t::ScanTableBuilder<Tid>{}
   .build();
 // clang-format on
 
-TEST(Parser, ctor) {
-  auto src = t2t::Source(src_path);
-  auto scanner = t2t::Scanner(table);
+using Sym = t2t::MaybeAnchoredToken;
 
-  using Sym = t2t::MaybeAnchoredToken;
+static auto src = t2t::Source(src_path);
+static auto scanner = t2t::Scanner(table);
 
-  auto next_sym = [&scanner, &src]() {
-    return scanner.scan(src);
-  };
+auto next_sym = []() {
+  return scanner.scan(src);
+};
 
-  auto unexp_sym_handler = []<t2t::TidKind... TidTs>(const Sym& sym, TidTs... tids) {
-    std::cout << std::format("Unexpected symbol {}\n", sym.val);
-  };
+auto unexp_sym_handler = []<t2t::TidKind... TidTs>(const Sym& sym, TidTs... tids) {
+  std::cout << std::format("Unexpected symbol {}\n", sym.val);
+};
 
-  auto parser = vvsec::Parser<Tid, Sym, decltype(next_sym), decltype(unexp_sym_handler)>(
-      next_sym, unexp_sym_handler);
-}
+class MyParser
+    : vvsec::Parser<Tid, Sym, decltype(next_sym), decltype(unexp_sym_handler)> {};
+
+int main() {}

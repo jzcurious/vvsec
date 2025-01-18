@@ -92,6 +92,6 @@ TEST(Parser, ctor) {
     std::cout << std::format("Unexpected symbol {}\n", sym.val);
   };
 
-  auto parser = vvsec::Parser<Tid, Sym, decltype(next_sym), decltype(unexp_sym_handler)>(
+  auto parser = vvsec::Parser<Tid, decltype(next_sym), decltype(unexp_sym_handler)>(
       next_sym, unexp_sym_handler);
 }

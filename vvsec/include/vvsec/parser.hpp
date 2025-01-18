@@ -14,9 +14,9 @@ concept SymKind = TidKind<TidT> and requires(T x, TidT tid) {
   { x == tid } -> std::same_as<bool>;
 };
 
-template <class T, class SymT>
+template <class T, class TidT>
 concept SymProviderKind = requires(T x) {
-  { x() } -> std::same_as<SymT>;
+  { x() } -> SymKind<TidT>;
 };
 
 template <class T, class SymT, class... TidTs>
@@ -43,14 +43,15 @@ concept same = (std::is_same_v<HeadT, TailTs> and ...);
 
 // clang-format off
 template <
-    class TidT,
-    SymKind<TidT> SymT,
-    SymProviderKind<SymT> SymProviderT,
+    TidKind TidT,
+    SymProviderKind<TidT> SymProviderT,
     class UnexpSymHandlerT
 >
 // clang-format on
 class Parser {
  private:
+  using SymT = std::invoke_result_t<SymProviderT>;
+
   SymT _first_sym;
   SymT _follow_sym;
 

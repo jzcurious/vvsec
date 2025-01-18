@@ -89,7 +89,7 @@ auto unexp_sym_handler = []<t2t::TidKind... TidTs>(const Sym& sym, TidTs... tids
   std::cout << std::format("Unexpected symbol {}\n", sym.val);
 };
 
-class MyParser
-    : vvsec::Parser<Tid, Sym, decltype(next_sym), decltype(unexp_sym_handler)> {};
+// class MyParser
+//     : vvsec::Parser<Tid, Sym, decltype(next_sym), decltype(unexp_sym_handler)> {};
 
 int main() {}

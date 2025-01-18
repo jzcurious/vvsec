@@ -20,7 +20,7 @@ concept SymProviderKind = requires(T x) {
 };
 
 template <class T, class SymT, class... TidTs>
-concept UnexpectedSymHandlerKind = requires(T x, SymT sym, TidTs... tids) {
+concept UnexpSymHandlerKind = requires(T x, SymT sym, TidTs... tids) {
   { x(sym, tids...) };
 };
 
@@ -46,7 +46,7 @@ template <
     class TidT,
     SymKind<TidT> SymT,
     SymProviderKind<SymT> SymProviderT,
-    class UnexpectedSymHandlerT
+    class UnexpSymHandlerT
 >
 // clang-format on
 class Parser {
@@ -55,7 +55,7 @@ class Parser {
   SymT _follow_sym;
 
   SymProviderT _sym_provider;
-  UnexpectedSymHandlerT _unexpected_sym_handler;
+  UnexpSymHandlerT _unexp_sym_handler;
 
   void _next() {
     _first_sym = _follow_sym;
@@ -63,11 +63,11 @@ class Parser {
   }
 
  public:
-  Parser(SymProviderT provider, UnexpectedSymHandlerT unexpected_sym_handler)
+  Parser(SymProviderT provider, UnexpSymHandlerT unexp_sym_handler)
       : _first_sym()
       , _follow_sym()
       , _sym_provider(provider)
-      , _unexpected_sym_handler(unexpected_sym_handler) {}
+      , _unexp_sym_handler(unexp_sym_handler) {}
 
   SymT first_sym() const {
     return _first_sym;
@@ -88,10 +88,10 @@ class Parser {
 
   template <class... TidTs>
     requires(detail::same<TidT, TidTs...>
-             and UnexpectedSymHandlerKind<UnexpectedSymHandlerT, SymT, TidTs...>)
+             and UnexpSymHandlerKind<UnexpSymHandlerT, SymT, TidTs...>)
   MaybeTid<TidT> expect(TidTs... tids) {
     auto mtid = accept(tids...);
-    if (not mtid) _unexpected_sym_handler(_follow_sym, tids...);
+    if (not mtid) _unexp_sym_handler(_follow_sym, tids...);
     return mtid;
   }
 };
